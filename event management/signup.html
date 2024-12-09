@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up Page</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background-image: url('back.jpg');
+            background-size: cover;
+            background-position: center;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .container {
+            background-color: rgba(255, 255, 255, 0.5);
+            backdrop-filter: blur(5px);
+            padding: 20px;
+            border-radius: 10px;
+            width: 350px;
+        }
+        .header {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        .logo {
+            width: 80px;
+            height: 80px;
+            margin-bottom: 10px;
+        }
+        h2 {
+            color: black;
+            font-weight: bold;
+            text-transform: uppercase;
+            margin: 0;
+            text-align: center;
+        }
+        select, input {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 8px;
+            border: none;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+        label {
+            display: block;
+            text-align: left;
+            color: black;
+            margin-bottom: 3px;
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #444444;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        a {
+            color: black;
+            text-decoration: none;
+        }
+        .login-link {
+            text-align: center;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <img src="sathyabama logo.jpg" alt="Logo" class="logo">
+            <h2>SIGNUP</h2>
+        </div>
+        <form action="login.html" method="post">
+            <label for="userType">User Type</label>
+            <select name="userType" id="userType" required>
+                <option value="" disabled selected>Select User Type</option>
+                <option value="admin">Admin</option>
+                <option value="faculty">Faculty</option>
+                <option value="student">Student</option>
+            </select>
+            <label for="name">Name</label>
+            <input type="text" name="name" id="name" placeholder="Enter your Name" required>
+            <label for="regNo">Reg No</label>
+            <input type="text" name="regNo" id="regNo" placeholder="Enter your Reg No" required>
+            <label for="email">Email</label>
+            <input type="email" name="email" id="email" placeholder="Enter your Email" required>
+            <label for="password">Password</label>
+            <input type="password" name="password" id="password" placeholder="Enter your Password" required>
+            <label for="confirmPassword">Confirm Password</label>
+            <input type="password" name="confirmPassword" id="confirmPassword" placeholder="Confirm your Password" required>
+            <button type="submit">Sign Up</button>
+        </form>
+        <p class="login-link"><a href="login.html">Already have an account? Login</a></p>
+    </div>
+</body>
+</html>

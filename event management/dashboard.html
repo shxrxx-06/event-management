@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #e2dddd;
+        }
+        .navbar {
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+            background-color: #333;
+            color: white;
+            padding: 20px;
+            height: 60px;
+        }
+        .menu-icon {
+            cursor: pointer;
+            font-size: 24px;
+            margin-right: 20px;
+        }
+        .sidebar {
+            width: 250px;
+            height: 100%;
+            position: fixed;
+            top: 0;
+            left: -250px;
+            background-color: #f1f1f1;
+            transition: 0.3s;
+            padding-top: 100px;
+            z-index: 1000;
+            font-size: 24px;
+        }
+        .sidebar.open {
+            left: 0;
+        }
+        .sidebar-item {
+            padding: 15px;
+            display: block;
+            transition: 0.3s;
+            color: black;
+            text-decoration: none;
+        }
+        .sidebar-item:hover {
+            background-color: #ddd;
+            transform: scale(1.05);
+        }
+        .sidebar-navbar {
+            background-color: #333;
+            color: white;
+            padding: 20px;
+            font-weight: bold;
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1001;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 20px;
+        }
+        .close-icon {
+            cursor: pointer;
+            font-size: 24px;
+        }
+        .main-content {
+            transition: margin-left 0.3s;
+            padding: 20px;
+            display: flex;
+        }
+        .main-content.shifted {
+            margin-left: 250px;
+        }
+        .dashboard-container {
+            flex: 1;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: flex-start;
+            gap: 20px;
+        }
+        .dashboard-item {
+            width: 200px;
+            height: 200px;
+            position: relative;
+            overflow: hidden;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .dashboard-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .dashboard-item .text-container {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background-color: rgba(0,0,0,0.7);
+            color: white;
+            padding: 10px;
+            transform: skew(-10deg);
+            transform-origin: bottom left;
+        }
+        .search-container {
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 10px;
+        }
+        .search-container input {
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px 0 0 5px;
+            width: 200px;
+        }
+        .search-container button {
+            padding: 10px;
+            background-color: #333;
+            color: white;
+            border: none;
+            border-radius: 0 5px 5px 0;
+            cursor: pointer;
+        }
+        .main-dashboard-text {
+            font-size: 24px;
+            font-weight: bold;
+        }
+        .logout-popup {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: #f0f0f0;
+            padding: 30px;
+            border-radius: 5px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            z-index: 2000;
+            width: 400px;
+            text-align: center;
+        }
+        .logout-popup p {
+            margin-bottom: 20px;
+            font-size: 18px;
+            line-height: 1.5;
+        }
+        .logout-popup button {
+            margin: 0 10px;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .logout-popup button.yes {
+            background-color: #4CAF50;
+            color: white;
+        }
+        .logout-popup button.no {
+            background-color: #f44336;
+            color: white;
+        }
+        .event-approval-container, .event-analytics-container, .event-reports-container, .upcoming-events-container, .calendar-container, .venue-booking-container {
+            width: 300px;
+            height: 300px;
+            border-radius: 20px;
+            overflow: hidden;
+            position: relative;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            margin-bottom: 40px;
+            display: inline-block;
+            margin-right: 20px;
+        }
+        .event-approval-container img, .event-analytics-container img, .event-reports-container img, .upcoming-events-container img, .calendar-container img, .venue-booking-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .event-approval-overlay, .event-analytics-overlay, .event-reports-overlay, .upcoming-events-overlay, .calendar-overlay, .venue-booking-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background-color: rgba(200, 200, 200, 0.7);
+            padding: 15px;
+            text-align: center;
+            height: 30%;
+            transform: translateY(100%);
+            transition: transform 0.3s ease-in-out;
+        }
+        .event-approval-container:hover .event-approval-overlay,
+        .event-analytics-container:hover .event-analytics-overlay,
+        .event-reports-container:hover .event-reports-overlay,
+        .upcoming-events-container:hover .upcoming-events-overlay,
+        .calendar-container:hover .calendar-overlay,
+        .venue-booking-container:hover .venue-booking-overlay {
+            transform: translateY(0);
+        }
+        .event-approval-container:hover img,
+        .event-analytics-container:hover img,
+        .event-reports-container:hover img,
+        .upcoming-events-container:hover img,
+        .calendar-container:hover img,
+        .venue-booking-container:hover img {
+            filter: blur(0.5px);
+        }
+        .event-approval-overlay span,
+        .event-analytics-overlay span,
+        .event-reports-overlay span,
+        .upcoming-events-overlay span,
+        .calendar-overlay span,
+        .venue-booking-overlay span {
+            font-size: 24px;
+            font-weight: 900;
+            color: #222;
+            display: block;
+        }
+        .event-approval-overlay::after,
+        .event-analytics-overlay::after,
+        .event-reports-overlay::after,
+        .upcoming-events-overlay::after,
+        .calendar-overlay::after,
+        .venue-booking-overlay::after {
+            content: '→';
+            display: block;
+            font-size: 24px;
+            margin-top: 5px;
+        }
+        .search-sidebar {
+            width: 200px;
+            padding: 10px;
+            background-color: transparent;
+            border-left: 1px solid #ddd;
+        }
+        .search-history {
+            margin-top: 10px;
+            font-size: 14px;
+        }
+        .search-history-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 3px 5px;
+            background-color: rgba(241, 241, 241, 0.5);
+            margin-bottom: 3px;
+            border-radius: 3px;
+        }
+        .search-history-item .delete-history {
+            cursor: pointer;
+            color: #888;
+        }
+        .search-history-item .delete-history:hover {
+            color: #f44336;
+        }
+        .no-results {
+            text-align: center;
+            margin-top: 10px;
+            font-style: italic;
+            color: #888;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <div class="menu-icon" onclick="toggleSidebar()">☰</div>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="white" class="group-icon">
+            <path d="M12 5.5a3.5 3.5 0 1 1 0 7 3.5 3.5 0 0 1 0-7zM5 12c1.1 0 2 .9 2 2s-.9 2-2 2-2-.9-2-2 .9-2 2-2zm14 0c1.1 0 2 .9 2 2s-.9 2-2 2-2-.9-2-2 .9-2 2-2zm-7 3c2.67 0 8 1.34 8 4v1H4v-1c0-2.66 5.33-4 8-4z"/>
+        </svg>
+        <span class="main-dashboard-text">GatherUp</span>
+    </div>
+
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-navbar">
+            <span class="main-dashboard-text">Dashboard</span>
+            <span class="close-icon" onclick="toggleSidebar()">✕</span>
+        </div>
+        <a href="about_page.html" class="sidebar-item">About Page</a>
+        <a href="history.html" class="sidebar-item">History</a>
+        <a href="profile.html" class="sidebar-item">Profile</a>
+        <a href="settings.html" class="sidebar-item">Settings</a>
+        <a href="#" class="sidebar-item" onclick="showLogoutPopup()">Logout</a>
+    </div>
+
+    <div class="main-content" id="mainContent">
+        <div class="dashboard-container">
+            <h1 class="main-dashboard-text">Welcome to Your Dashboard</h1>
+          <a href ="event_approval.html">
+                <div class="event-approval-container">
+                    <img src="event_approval.jpg" alt="Event Approval">
+                    <div class="event-approval-overlay">
+                        <span>Event Approval</span>
+                    </div>
+                </div>
+            </a>
+            <div id="dashboardItems">
+                <div class="event-analytics-container">
+                    <img src="event_analytics.jpg" alt="Event Analytics">
+                    <div class="event-analytics-overlay">
+                        <span>Event Analytics</span>
+                    </div>
+                </div>
+
+                <div class="event-reports-container">
+                    <img src="event_reports.jpg" alt="Event Reports">
+                    <div class="event-reports-overlay">
+                        <span>Event Reports</span>
+                    </div>
+                </div>
+
+                <div class="upcoming-events-container">
+                    <img src="upcoming_events.jpg" alt="Upcoming Events">
+                    <div class="upcoming-events-overlay">
+                        <span>Upcoming Events</span>
+                    </div>
+                </div>
+              <a href="aalendar.html">
+                <div class="calendar-container">
+                    <img src="calender.jpg" alt="Calendar">
+                    <div class="calendar-overlay">
+                        <span>Calendar</span>
+                    </div>
+                </div>
+              </a>  
+              <a href="avenue_booking.html">
+                <div class="venue-booking-container">
+                    <img src="venue_booking.jpg" alt="Venue Booking">
+                    <div class="venue-booking-overlay">
+                        <span>Venue Booking</span>
+                    </div>
+                </div>
+            </a>
+            </div>
+        </div>
+
+        <div class="search-sidebar">
+            <div class="search-container">
+                <input type="text" id="searchInput" placeholder="Search...">
+                <button type="submit" onclick="performSearch()">🔍</button>
+            </div>
+            <h3>Search History</h3>
+            <div id="searchHistory" class="search-history"></div>
+            <div id="noResults" class="no-results" style="display: none;">Couldn't find what you're looking for. Maybe a typo? Please recheck.</div>
+        </div>
+    </div>
+
+    <div id="logoutPopup" class="logout-popup">
+        <p>Are you sure you want to logout?<br>Logging out without saving your data may result in loss of your data</p>
+        <button class="yes" onclick="logout()">Yes</button>
+        <button class="no" onclick="hideLogoutPopup()">No</button>
+    </div>
+
+    <script>
+        function toggleSidebar() {
+            document.getElementById("sidebar").classList.toggle("open");
+            document.getElementById("mainContent").classList.toggle("shifted");
+        }
+
+        function showLogoutPopup() {
+            document.getElementById("logoutPopup").style.display = "block";
+        }
+
+        function hideLogoutPopup() {
+            document.getElementById("logoutPopup").style.display = "none";
+        }
+
+        function logout() {
+            window.location.href = 'login.html';
+        }
+
+        function performSearch() {
+            const searchInput = document.getElementById('searchInput');
+            const searchTerm = searchInput.value.toLowerCase().trim();
+            const dashboardItems = document.getElementById('dashboardItems');
+            const containers = dashboardItems.getElementsByClassName('event-approval-container');
+            let found = false;
+
+            for (let container of containers) {
+                const containerText = container.querySelector('span').textContent.toLowerCase();
+                if (containerText.includes(searchTerm)) {
+                    container.style.display = 'inline-block';
+                    found = true;
+                } else {
+                    container.style.display = 'inline-block'; // Changed from 'none' to 'inline-block'
+                }
+            }
+
+            document.getElementById('noResults').style.display = found ? 'none' : 'block';
+            addToSearchHistory(searchTerm);
+        }
+
+        function addToSearchHistory(term) {
+            const searchHistory = document.getElementById('searchHistory');
+            const historyItem = document.createElement('div');
+            historyItem.className = 'search-history-item';
+            historyItem.innerHTML = `
+                <span>${term}</span>
+                <span class="delete-history" onclick="deleteHistoryItem(this)">✕</span>
+            `;
+            searchHistory.appendChild(historyItem);
+        }
+
+        function deleteHistoryItem(element) {
+            element.parentElement.remove();
+        }
+
+        document.getElementById('searchInput').addEventListener('keyup', function(event) {
+            if (event.key === 'Enter') {
+                performSearch();
+            }
+        });
+    </script>
+</body>
+</html>

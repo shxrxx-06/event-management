@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Event Calendar</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f0f0f0;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .current-date {
+            font-size: 18px;
+            font-weight: bold;
+        }
+        .calendar {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 5px;
+        }
+        .calendar-header {
+            font-weight: bold;
+            text-align: center;
+            padding: 10px;
+            background-color: #f0f0f0;
+        }
+        .calendar-day {
+            padding: 10px;
+            text-align: center;
+            border: 1px solid #ddd;
+            min-height: 80px;
+            cursor: pointer;
+            position: relative;
+        }
+        .calendar-day:hover {
+            background-color: #f9f9f9;
+        }
+        .calendar-day.has-event {
+            border: 2px solid #4CAF50;
+            border-radius: 5px;
+        }
+        .event {
+            background-color: #e0e0e0;
+            padding: 2px 5px;
+            margin: 2px 0;
+            font-size: 12px;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+        .view-selector {
+            margin-bottom: 10px;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.4);
+        }
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 500px;
+        }
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .nav-button {
+            background-color: white;
+            border: 1px solid #4CAF50;
+            color: #4CAF50;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 4px 2px;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.3s, color 0.3s;
+        }
+        .nav-button:hover {
+            background-color: #808080;
+            color: white;
+        }
+        .event-form {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .event-form input, .event-form button, .event-form select {
+            padding: 10px;
+            font-size: 16px;
+        }
+        .event-form button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        .completed-event {
+            text-decoration: line-through;
+            opacity: 0.6;
+        }
+        .go-to-container {
+            display: flex;
+            align-items: center;
+        }
+        #goToButton {
+            background-color: #808080;
+            color: white;
+            margin-left: 5px;
+        }
+        #viewSelector {
+            font-size: 18px;
+            padding: 10px;
+        }
+        #goToMonth {
+            padding: 10px;
+            font-size: 16px;
+            width: 180px;
+        }
+        .delete-button {
+            background-color: #f44336;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 12px;
+            margin-top: 5px;
+            cursor: pointer;
+            border-radius: 3px;
+        }
+        .note {
+            margin-top: 20px;
+            font-style: italic;
+            color: #666;
+            display: block; /* Ensure the note is displayed */
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Event Calendar</h1>
+            <div class="current-date" id="currentDate"></div>
+        </div>
+        <div class="navigation">
+            <button class="nav-button" id="prevMonth">← Previous Month</button>
+            <div class="go-to-container">
+                <input type="month" id="goToMonth">
+                <button class="nav-button" id="goToButton">Go To</button>
+            </div>
+            <button class="nav-button" id="nextMonth">Next Month →</button>
+        </div>
+        <div class="view-selector">
+            <select id="viewSelector">
+                <option value="month">Monthly</option>
+                <option value="week">Weekly</option>
+                <option value="day">Daily</option>
+            </select>
+        </div>
+        <div id="calendar" class="calendar"></div>
+        <p class="note">Note: The events you add are visible only to you.</p>
+    </div>
+
+    <div id="eventModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Add Event</h2>
+            <form class="event-form">
+                <input type="date" id="eventDate" readonly>
+                <input type="text" id="eventTitle" placeholder="Event Title" required>
+                <input type="time" id="eventTime" required>
+                <textarea id="eventDescription" placeholder="Event Description"></textarea>
+                <button type="submit">Save Event</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const currentDateElement = document.getElementById('currentDate');
+        const calendarElement = document.getElementById('calendar');
+        const viewSelector = document.getElementById('viewSelector');
+        const modal = document.getElementById('eventModal');
+        const closeBtn = document.getElementsByClassName('close')[0];
+        const prevMonthBtn = document.getElementById('prevMonth');
+        const nextMonthBtn = document.getElementById('nextMonth');
+        const goToMonthInput = document.getElementById('goToMonth');
+        const goToButton = document.getElementById('goToButton');
+        let events = JSON.parse(localStorage.getItem('events')) || {};
+        let selectedDate;
+        let currentMonth = new Date();
+
+        function updateCurrentDate() {
+            currentDateElement.textContent = currentMonth.toLocaleDateString('en-US', { year: 'numeric', month: 'long' });
+        }
+
+        function renderCalendar() {
+            const view = viewSelector.value;
+            calendarElement.innerHTML = '';
+            
+            if (view === 'month') {
+                renderMonthView();
+            } else if (view === 'week') {
+                renderWeekView();
+            } else {
+                renderDayView();
+            }
+        }
+
+        function renderMonthView() {
+            const year = currentMonth.getFullYear();
+            const month = currentMonth.getMonth();
+            const firstDay = new Date(year, month, 1);
+            const lastDay = new Date(year, month + 1, 0);
+
+            const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+            dayNames.forEach(day => {
+                const dayElement = document.createElement('div');
+                dayElement.className = 'calendar-header';
+                dayElement.textContent = day;
+                calendarElement.appendChild(dayElement);
+            });
+
+            for (let i = 0; i < firstDay.getDay(); i++) {
+                calendarElement.appendChild(document.createElement('div'));
+            }
+
+            for (let i = 1; i <= lastDay.getDate(); i++) {
+                const dayElement = document.createElement('div');
+                dayElement.className = 'calendar-day';
+                dayElement.textContent = i;
+                
+                const dateString = `${year}-${String(month + 1).padStart(2, '0')}-${String(i).padStart(2, '0')}`;
+                if (events[dateString]) {
+                    dayElement.classList.add('has-event');
+                    events[dateString].forEach((event, index) => {
+                        const eventElement = document.createElement('div');
+                        eventElement.className = 'event';
+                        eventElement.textContent = `${event.time} - ${event.title}`;
+                        if (event.completed) {
+                            eventElement.classList.add('completed-event');
+                        }
+                        eventElement.addEventListener('click', (e) => {
+                            e.stopPropagation();
+                            showDeleteOption(dateString, index);
+                        });
+                        dayElement.appendChild(eventElement);
+                    });
+                }
+                
+                dayElement.addEventListener('click', () => showEventModal(dateString));
+                calendarElement.appendChild(dayElement);
+            }
+        }
+
+        function renderWeekView() {
+            // ... (keep existing week view code)
+        }
+
+        function renderDayView() {
+            // ... (keep existing day view code)
+        }
+
+        function showEventModal(date) {
+            selectedDate = date;
+            document.getElementById('eventDate').value = date;
+            document.getElementById('eventTitle').value = '';
+            document.getElementById('eventTime').value = '';
+            document.getElementById('eventDescription').value = '';
+            document.getElementById('eventVisibility').value = '';
+            modal.style.display = 'block';
+        }
+
+        function saveEvent(e) {
+            e.preventDefault();
+            const title = document.getElementById('eventTitle').value;
+            const time = document.getElementById('eventTime').value;
+            const description = document.getElementById('eventDescription').value;
+            const visibility = document.getElementById('eventVisibility').value;
+            
+            if (title && time && visibility) {
+                if (!events[selectedDate]) {
+                    events[selectedDate] = [];
+                }
+                events[selectedDate].push({
+                    title,
+                    time,
+                    description,
+                    visibility,
+                    completed: false
+                });
+                localStorage.setItem('events', JSON.stringify(events));
+                renderCalendar();
+                modal.style.display = 'none';
+            }
+        }
+
+        function showDeleteOption(date, index) {
+            const event = events[date][index];
+            const confirmDelete = confirm(`Do you want to delete the event "${event.title}"?`);
+            if (confirmDelete) {
+                events[date].splice(index, 1);
+                if (events[date].length === 0) {
+                    delete events[date];
+                }
+                localStorage.setItem('events', JSON.stringify(events));
+                renderCalendar();
+            }
+        }
+
+        closeBtn.onclick = function() {
+            modal.style.display = 'none';
+        }
+
+        window.onclick = function(event) {
+            if (event.target == modal) {
+                modal.style.display = 'none';
+            }
+        }
+
+        prevMonthBtn.addEventListener('click', () => {
+            currentMonth.setMonth(currentMonth.getMonth() - 1);
+            updateCurrentDate();
+            renderCalendar();
+        });
+
+        nextMonthBtn.addEventListener('click', () => {
+            currentMonth.setMonth(currentMonth.getMonth() + 1);
+            updateCurrentDate();
+            renderCalendar();
+        });
+
+        goToButton.addEventListener('click', () => {
+            const [year, month] = goToMonthInput.value.split('-');
+            currentMonth = new Date(year, month - 1);
+            updateCurrentDate();
+            renderCalendar();
+        });
+
+        updateCurrentDate();
+        renderCalendar();
+        viewSelector.addEventListener('change', renderCalendar);
+        document.querySelector('.event-form').addEventListener('submit', saveEvent);
+    </script>
+</body>
+</html>

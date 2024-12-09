@@ -1,0 +1,217 @@
+<div class="event-organiser-container">
+    <nav class="navbar">
+        <div class="menu-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="3" y1="12" x2="21" y2="12"></line>
+                <line x1="3" y1="6" x2="21" y2="6"></line>
+                <line x1="3" y1="18" x2="21" y2="18"></line>
+            </svg>
+        </div>
+        <div class="logo">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                <circle cx="9" cy="7" r="4"></circle>
+                <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+            </svg>
+            <span>GatherUp - Organiser</span>
+        </div>
+    </nav>
+
+    <div class="sidebar">
+        <div class="close-btn">&times;</div>
+        <ul>
+            <li><a href="#" id="createRoomBtn">Create a Room</a></li>
+            <li><a href="#" id="yourEventsBtn">Your Events</a></li>
+        </ul>
+    </div>
+
+    <div class="main-content">
+        <h2>Organise an Event</h2>
+        <form id="eventForm">
+            <div class="form-group">
+                <label for="eventName">Event Name</label>
+                <input type="text" id="eventName" name="eventName" required>
+            </div>
+            <div class="form-group">
+                <label for="eventDate">Event Date</label>
+                <input type="date" id="eventDate" name="eventDate" required>
+            </div>
+            <div class="form-group">
+                <label for="eventVenue">Event Venue</label>
+                <input type="text" id="eventVenue" name="eventVenue" required>
+            </div>
+            <div class="form-group">
+                <label for="eventBrochure">Event Brochure</label>
+                <input type="file" id="eventBrochure" name="eventBrochure" accept=".pdf,.doc,.docx">
+            </div>
+            <div class="form-group">
+                <label for="geoTagPhoto">Geo Tag Photo</label>
+                <input type="file" id="geoTagPhoto" name="geoTagPhoto" accept="image/*">
+            </div>
+            <button type="submit" class="submit-btn">Submit Event</button>
+        </form>
+    </div>
+
+    <div class="create-room-modal">
+        <div class="modal-content">
+            <h3>Create a Room</h3>
+            <form id="createRoomForm">
+                <div class="form-group">
+                    <label for="roomName">Room Name</label>
+                    <input type="text" id="roomName" name="roomName" required>
+                </div>
+                <div class="form-group">
+                    <label for="roomValidity">Room Validity</label>
+                    <input type="date" id="roomValidity" name="roomValidity" required>
+                </div>
+                <div class="form-group">
+                    <label for="adminEmail">Admin's Email ID</label>
+                    <input type="email" id="adminEmail" name="adminEmail" required>
+                </div>
+                <div class="form-group">
+                    <label for="maxStrength">Maximum Strength</label>
+                    <input type="number" id="maxStrength" name="maxStrength" required>
+                </div>
+                <button type="submit" class="submit-btn">Create Room</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<style>
+    .event-organiser-container {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 20px;
+    }
+    .navbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px;
+        background-color: #f8f8f8;
+    }
+    .menu-icon, .logo {
+        display: flex;
+        align-items: center;
+    }
+    .logo span {
+        margin-left: 10px;
+        font-weight: bold;
+    }
+    .sidebar {
+        position: fixed;
+        left: -250px;
+        top: 0;
+        width: 250px;
+        height: 100%;
+        background-color: #f8f8f8;
+        transition: 0.3s;
+    }
+    .sidebar.active {
+        left: 0;
+    }
+    .close-btn {
+        text-align: right;
+        padding: 10px;
+        cursor: pointer;
+    }
+    .sidebar ul {
+        list-style-type: none;
+        padding: 0;
+    }
+    .sidebar ul li {
+        padding: 10px;
+    }
+    .sidebar ul li a {
+        text-decoration: none;
+        color: #333;
+    }
+    .main-content {
+        transition: 0.3s;
+    }
+    .form-group {
+        margin-bottom: 15px;
+    }
+    label {
+        display: block;
+        margin-bottom: 5px;
+    }
+    input[type="text"], input[type="date"], input[type="file"], input[type="email"], input[type="number"] {
+        width: 100%;
+        padding: 8px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+    }
+    .submit-btn {
+        background-color: #4CAF50;
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+    .submit-btn:hover {
+        background-color: #45a049;
+    }
+    .create-room-modal {
+        display: none;
+        position: fixed;
+        z-index: 1;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgba(0,0,0,0.4);
+    }
+    .modal-content {
+        background-color: #fefefe;
+        margin: 15% auto;
+        padding: 20px;
+        border: 1px solid #888;
+        width: 80%;
+        max-width: 500px;
+    }
+</style>
+
+<script>
+    document.querySelector('.menu-icon').addEventListener('click', function() {
+        document.querySelector('.sidebar').classList.add('active');
+        document.querySelector('.main-content').style.marginLeft = '250px';
+    });
+
+    document.querySelector('.close-btn').addEventListener('click', function() {
+        document.querySelector('.sidebar').classList.remove('active');
+        document.querySelector('.main-content').style.marginLeft = '0';
+    });
+
+    document.getElementById('createRoomBtn').addEventListener('click', function() {
+        document.querySelector('.create-room-modal').style.display = 'block';
+    });
+
+    document.getElementById('yourEventsBtn').addEventListener('click', function() {
+        // Implement Your Events functionality here
+        alert('Your Events clicked');
+    });
+
+    document.getElementById('eventForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        // Implement event submission logic here
+        alert('Event submitted successfully!');
+    });
+
+    document.getElementById('createRoomForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        // Implement room creation logic here
+        alert('Room created successfully!');
+        document.querySelector('.create-room-modal').style.display = 'none';
+    });
+
+    window.onclick = function(event) {
+        if (event.target == document.querySelector('.create-room-modal')) {
+            document.querySelector('.create-room-modal').style.display = "none";
+        }
+    }
+</script>

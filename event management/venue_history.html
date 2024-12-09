@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Venue History</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f0f0f0;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            padding: 10px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Venue History</h1>
+        <table id="venueHistoryTable">
+            <thead>
+                <tr>
+                    <th>S.No</th>
+                    <th>Event Name</th>
+                    <th>Event Date</th>
+                    <th>Venue</th>
+                    <th>Timing</th>
+                    <th>Duration</th>
+                </tr>
+            </thead>
+            <tbody id="venueHistoryTableBody">
+                <!-- Table rows will be dynamically inserted here -->
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        function getUrlParams() {
+            const params = new URLSearchParams(window.location.search);
+            return {
+                eventName: params.get('eventName'),
+                eventDate: params.get('eventDate'),
+                venue: params.get('venue'),
+                timing: params.get('timing'),
+                duration: params.get('duration')
+            };
+        }
+
+        function displayVenueHistory() {
+            const tableBody = document.getElementById('venueHistoryTableBody');
+            const newVenue = getUrlParams();
+            
+            // Retrieve existing past venues from localStorage
+            let pastVenues = JSON.parse(localStorage.getItem('pastVenues')) || [];
+            
+            // Add the new venue if it's not already in the list
+            if (newVenue.eventName && !pastVenues.some(v => v.eventName === newVenue.eventName && v.eventDate === newVenue.eventDate)) {
+                pastVenues.push(newVenue);
+            }
+
+            // Sort past venues by date (most recent first)
+            pastVenues.sort((a, b) => new Date(b.eventDate) - new Date(a.eventDate));
+
+            // Save updated past venues back to localStorage
+            localStorage.setItem('pastVenues', JSON.stringify(pastVenues));
+
+            // Clear existing table rows
+            tableBody.innerHTML = '';
+
+            // Populate table with past venues
+            pastVenues.forEach((venue, index) => {
+                const row = tableBody.insertRow();
+                row.innerHTML = `
+                    <td>${index + 1}</td>
+                    <td>${venue.eventName}</td>
+                    <td>${venue.eventDate}</td>
+                    <td>${venue.venue}</td>
+                    <td>${venue.timing}</td>
+                    <td>${venue.duration}</td>
+                `;
+            });
+        }
+
+        // Display venue history when the page loads
+        displayVenueHistory();
+    </script>
+</body>
+</html>
