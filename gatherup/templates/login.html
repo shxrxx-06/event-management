@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Page</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background-image: url('back.jpg');
+            background-size: cover;
+            background-position: center;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .container {
+            background-color: rgba(255, 255, 255, 0.5);
+            backdrop-filter: blur(5px);
+            padding: 40px;
+            border-radius: 10px;
+            width: 300px;
+            text-align: center;
+        }
+        .logo {
+            width: 100px;
+            height: 100px;
+            margin-bottom: 20px;
+        }
+        h2 {
+            color: black;
+            margin-bottom: 20px;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+        select, input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: none;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+        label {
+            display: block;
+            text-align: left;
+            color: black;
+            margin-bottom: 5px;
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: orange;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        a {
+            color: black;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <img src="sathyabama logo.jpg" alt="Logo" class="logo">
+        <h2>LOGIN</h2>
+        <form id="loginForm">
+            <label for="userType">User Type</label>
+            <select name="userType" id="userType" required>
+                <option value="" disabled selected>Select User Type</option>
+                <option value="admin">Admin</option>
+                <option value="faculty">Faculty</option>
+                <option value="student">Student</option>
+            </select>
+            <label for="email">Email</label>
+            <input type="email" name="email" id="email" placeholder="Enter your Email" required>
+            <label for="password">Password</label>
+            <input type="password" name="password" id="password" placeholder="Enter your Password" required>
+            <button type="submit" style="background-color: #333333;">Login</button>
+        </form>
+        <p><a href="signup.html">New User? Sign up</a></p>
+    </div>
+
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const userType = document.getElementById('userType').value;
+            switch(userType) {
+                case 'admin':
+                    window.location.href = 'dashboard.html';
+                    break;
+                case 'faculty':
+                    window.location.href = 'fashboard.html';
+                    break;
+                case 'student':
+                    window.location.href = 'sashboard.html';
+                    break;
+                default:
+                    alert('Please select a user type');
+            }
+        });
+    </script>
+</body>
+</html>

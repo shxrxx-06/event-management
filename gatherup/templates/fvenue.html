@@ -1,0 +1,380 @@
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: #f0f0f0;
+    }
+    .navbar {
+        background-color: #333;
+        overflow: hidden;
+        position: fixed;
+        top: 0;
+        width: 100%;
+        z-index: 1000;
+        height: 60px;
+    }
+    .navbar a {
+        float: left;
+        display: block;
+        color: #f2f2f2;
+        text-align: center;
+        padding: 18px 20px;
+        text-decoration: none;
+        font-size: 20px;
+    }
+    .navbar .menu-icon {
+        float: left;
+        display: block;
+        color: #f2f2f2;
+        text-align: center;
+        padding: 18px 20px;
+        text-decoration: none;
+        cursor: pointer;
+        font-size: 20px;
+    }
+    .sidebar {
+        height: 100%;
+        width: 0;
+        position: fixed;
+        z-index: 1001;
+        top: 0;
+        left: 0;
+        background-color: #333;
+        overflow-x: hidden;
+        transition: 0.5s;
+        padding-top: 60px;
+    }
+    .sidebar a {
+        padding: 8px 8px 8px 32px;
+        text-decoration: none;
+        font-size: 25px;
+        color: #818181;
+        display: block;
+        transition: 0.3s;
+    }
+    .sidebar a:hover {
+        color: #f1f1f1;
+        background-color: #555;
+        transform: scale(1.05);
+    }
+    .sidebar .closebtn {
+        position: absolute;
+        top: 0;
+        right: 25px;
+        font-size: 36px;
+        margin-left: 50px;
+    }
+    .venue-form {
+        max-width: 600px;
+        margin: 80px auto 20px;
+        padding: 30px;
+        background-color: #ffffff;
+        border-radius: 10px;
+        box-shadow: 0 0 20px rgba(0,0,0,0.1);
+    }
+    .venue-form h2 {
+        text-align: center;
+        color: #333;
+        margin-bottom: 30px;
+    }
+    .form-group {
+        margin-bottom: 20px;
+    }
+    .form-group label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: bold;
+        color: #555;
+    }
+    .form-group input, .form-group select, .form-group textarea {
+        width: 100%;
+        padding: 12px;
+        border: 1px solid #ddd;
+        border-radius: 6px;
+        box-sizing: border-box;
+        font-size: 16px;
+        transition: border-color 0.3s ease;
+    }
+    .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+        border-color: #4CAF50;
+        outline: none;
+    }
+    .form-group textarea {
+        resize: vertical;
+        min-height: 100px;
+    }
+    .submit-btn {
+        display: block;
+        width: 100%;
+        padding: 14px;
+        background-color: #4CAF50;
+        color: white;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 18px;
+        transition: background-color 0.3s ease;
+    }
+    .submit-btn:hover {
+        background-color: #45a049;
+    }
+    .modal {
+        display: none;
+        position: fixed;
+        z-index: 1002;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgba(0,0,0,0.4);
+    }
+    .modal-content {
+        background-color: #fefefe;
+        margin: 15% auto;
+        padding: 20px;
+        border: 1px solid #888;
+        width: 80%;
+        max-width: 500px;
+        position: relative;
+        border-radius: 10px;
+    }
+    .close {
+        color: #aaa;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+        cursor: pointer;
+    }
+    .close:hover,
+    .close:focus {
+        color: black;
+        text-decoration: none;
+        cursor: pointer;
+    }
+    .slide-page {
+        height: 100%;
+        width: 0;
+        position: fixed;
+        z-index: 1003;
+        top: 0;
+        left: 0;
+        background-color: #fff;
+        overflow-x: hidden;
+        transition: 0.5s;
+        padding-top: 60px;
+    }
+    .slide-page .closebtn {
+        position: absolute;
+        top: 50%;
+        right: 10px;
+        font-size: 36px;
+        margin-left: 50px;
+        background-color: #f0f0f0;
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        cursor: pointer;
+    }
+    .slide-page-content {
+        padding: 20px;
+        text-align: center;
+    }
+    .no-bookings-image {
+        max-width: 100%;
+        height: auto;
+        margin-top: 20px;
+    }
+    .form-row {
+        display: flex;
+        justify-content: space-between;
+    }
+    .form-row .form-group {
+        width: 48%;
+    }
+</style>
+
+<div class="navbar">
+    <span class="menu-icon" onclick="openNav()">&#9776;</span>
+    <a href="#home">GatherUp - Venue Booking System</a>
+</div>
+
+<div id="mySidebar" class="sidebar">
+    <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+    <a href="#" onclick="openSlidePage('bookingStatus')">Your Booking Status</a>
+    <a href="#" onclick="openSlidePage('bookingHistory')">Booking History</a>
+</div>
+
+<div id="bookingStatusPage" class="slide-page">
+    <span class="closebtn" onclick="closeSlidePage('bookingStatus')">&lt;</span>
+    <div class="slide-page-content">
+        <h2>Booking Status</h2>
+        <div id="bookingStatusContent">
+            <!-- Booking status content will be dynamically inserted here -->
+        </div>
+    </div>
+</div>
+
+<div id="bookingHistoryPage" class="slide-page">
+    <span class="closebtn" onclick="closeSlidePage('bookingHistory')">&lt;</span>
+    <div class="slide-page-content">
+        <h2>Booking History</h2>
+        <div id="bookingHistoryContent">
+            <!-- Booking history content will be dynamically inserted here -->
+        </div>
+    </div>
+</div>
+
+<div class="venue-form">
+    <h2>Venue Booking Form</h2>
+    <form id="venueBookingForm">
+        <div class="form-group">
+            <label for="eventName">Event Name:</label>
+            <input type="text" id="eventName" name="eventName" required>
+        </div>
+        <div class="form-group">
+            <label for="eventDate">Event Date:</label>
+            <input type="date" id="eventDate" name="eventDate" required>
+        </div>
+        <div class="form-group">
+            <label for="eventVenue">Event Venue:</label>
+            <input type="text" id="eventVenue" name="eventVenue" required>
+        </div>
+        <div class="form-group">
+            <label for="participantCapacity">Expected Participant Capacity:</label>
+            <input type="number" id="participantCapacity" name="participantCapacity" min="1" required>
+        </div>
+        <div class="form-row">
+            <div class="form-group">
+                <label for="eventTimingFrom">Event Timing From:</label>
+                <input type="time" id="eventTimingFrom" name="eventTimingFrom" required>
+            </div>
+            <div class="form-group">
+                <label for="eventTimingTo">Event Timing To:</label>
+                <input type="time" id="eventTimingTo" name="eventTimingTo" required>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="eventDuration">Duration of Event (in hours):</label>
+            <input type="number" id="eventDuration" name="eventDuration" min="0.5" step="0.5" required>
+        </div>
+        <div class="form-group">
+            <label for="numberOfDays">Number of Days:</label>
+            <input type="number" id="numberOfDays" name="numberOfDays" min="1" required>
+        </div>
+        <div class="form-group">
+            <label for="facultyCoordinators">Faculty Co-ordinators:</label>
+            <textarea id="facultyCoordinators" name="facultyCoordinators" rows="3" required></textarea>
+        </div>
+        <div class="form-group">
+            <label for="studentCoordinators">Student Co-ordinators:</label>
+            <textarea id="studentCoordinators" name="studentCoordinators" rows="3" required></textarea>
+        </div>
+        <div class="form-group">
+            <label for="posterUpload">Upload Poster (jpg, jpeg, png, pdf):</label>
+            <input type="file" id="posterUpload" name="posterUpload" accept=".jpg,.jpeg,.png,.pdf" required>
+        </div>
+        <button type="submit" class="submit-btn">Apply for Venue</button>
+    </form>
+</div>
+
+<div id="successModal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <p>Your venue booking application was applied successfully. Wait for confirmation. Have a good day!</p>
+    </div>
+</div>
+
+<script>
+    let bookings = [];
+
+    function openNav() {
+        document.getElementById("mySidebar").style.width = "250px";
+    }
+
+    function closeNav() {
+        document.getElementById("mySidebar").style.width = "0";
+    }
+
+    function openSlidePage(page) {
+        document.getElementById(page + "Page").style.width = "100%";
+        if (page === 'bookingHistory') {
+            displayBookingHistory();
+        } else if (page === 'bookingStatus') {
+            displayBookingStatus();
+        }
+    }
+
+    function closeSlidePage(page) {
+        document.getElementById(page + "Page").style.width = "0";
+    }
+
+    function displayBookingHistory() {
+        const historyContent = document.getElementById('bookingHistoryContent');
+        if (bookings.length === 0) {
+            historyContent.innerHTML = `
+                <p>You haven't booked so far. Why not today? Be the first!</p>
+                <div style="text-align: center;">
+                    <img src="booking_history.jpg" alt="No Booking History" class="no-bookings-image" style="width: 200px; height: auto;">
+                </div>
+            `;
+        } else {
+            let html = "<ul>";
+            bookings.forEach(booking => {
+                html += `<li>${booking.eventName} - ${booking.eventDate} (${booking.status})</li>`;
+            });
+            html += "</ul>";
+            historyContent.innerHTML = html;
+        }
+    }
+
+    function displayBookingStatus() {
+        const statusContent = document.getElementById('bookingStatusContent');
+        if (bookings.length === 0) {
+            statusContent.innerHTML = `
+                <p>No current bookings.</p>
+                <div style="text-align: center;">
+                    <img src="booking_status.jpg" alt="No Booking Status" class="no-bookings-image" style="width: 200px; height: auto;">
+                </div>
+            `;
+        } else {
+            let html = "<ul>";
+            bookings.forEach(booking => {
+                html += `<li>${booking.eventName} - ${booking.eventDate} (${booking.status})</li>`;
+            });
+            html += "</ul>";
+            statusContent.innerHTML = html;
+        }
+    }
+
+    document.getElementById('venueBookingForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const formData = new FormData(this);
+        const newBooking = {
+            eventName: formData.get('eventName'),
+            eventDate: formData.get('eventDate'),
+            status: 'Applied'
+        };
+        bookings.push(newBooking);
+        var modal = document.getElementById('successModal');
+        modal.style.display = "block";
+        this.reset();
+    });
+
+    var modal = document.getElementById('successModal');
+    var span = document.getElementsByClassName("close")[0];
+
+    span.onclick = function() {
+        modal.style.display = "none";
+    }
+
+    window.onclick = function(event) {
+        if (event.target == modal) {
+            modal.style.display = "none";
+        }
+    }
+</script>

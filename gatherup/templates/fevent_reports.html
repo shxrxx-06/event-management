@@ -1,0 +1,131 @@
+<div class="event-reports-container">
+    <h2>Submit Your Event Reports</h2>
+    <p>Upload your event report here:</p>
+    <div class="file-upload">
+        <label for="reportUpload" class="upload-label">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                <polyline points="17 8 12 3 7 8"></polyline>
+                <line x1="12" y1="3" x2="12" y2="15"></line>
+            </svg>
+            Choose File
+        </label>
+        <input type="file" id="reportUpload" name="reportUpload" accept=".pdf,.docx,.doc" style="display: none;">
+        <span id="fileName"></span>
+    </div>
+    <p class="file-formats">Accepted formats: PDF, DOCX, DOC</p>
+    <button type="button" class="submit-btn" onclick="uploadReport()">Upload Report</button>
+
+    <h3>Submitted Reports</h3>
+    <table id="reportTable">
+        <thead>
+            <tr>
+                <th>S No</th>
+                <th>File Name</th>
+                <th>Submitted Date</th>
+            </tr>
+        </thead>
+        <tbody id="reportList">
+            <!-- Report list will be dynamically populated here -->
+        </tbody>
+    </table>
+</div>
+
+<style>
+    .event-reports-container {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 20px;
+    }
+    .file-upload {
+        margin: 20px 0;
+        display: flex;
+        align-items: center;
+    }
+    .upload-label {
+        display: inline-flex;
+        align-items: center;
+        padding: 10px 20px;
+        background-color: #f0f0f0;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+    .upload-label svg {
+        margin-right: 10px;
+    }
+    #fileName {
+        margin-left: 10px;
+        font-style: italic;
+    }
+    .file-formats {
+        font-size: 0.9em;
+        color: #666;
+        margin-bottom: 20px;
+    }
+    .submit-btn {
+        background-color: #4CAF50;
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+    .submit-btn:hover {
+        background-color: #45a049;
+    }
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+    th, td {
+        border: 1px solid #ddd;
+        padding: 8px;
+        text-align: left;
+    }
+    th {
+        background-color: #f2f2f2;
+    }
+</style>
+
+<script>
+    let reports = [];
+
+    document.getElementById('reportUpload').addEventListener('change', function(e) {
+        const fileName = e.target.files[0].name;
+        document.getElementById('fileName').textContent = fileName;
+    });
+
+    function uploadReport() {
+        const fileInput = document.getElementById('reportUpload');
+        const file = fileInput.files[0];
+        
+        if (file) {
+            const newReport = {
+                fileName: file.name,
+                submittedDate: new Date().toLocaleString()
+            };
+            reports.push(newReport);
+            updateReportList();
+            fileInput.value = ''; // Clear the file input
+            document.getElementById('fileName').textContent = ''; // Clear the displayed file name
+            alert('Report uploaded successfully!');
+        } else {
+            alert('Please select a file to upload.');
+        }
+    }
+
+    function updateReportList() {
+        const reportList = document.getElementById('reportList');
+        reportList.innerHTML = '';
+        reports.forEach((report, index) => {
+            const row = reportList.insertRow();
+            const cellSNo = row.insertCell(0);
+            const cellFileName = row.insertCell(1);
+            const cellSubmittedDate = row.insertCell(2);
+            cellSNo.textContent = index + 1;
+            cellFileName.textContent = report.fileName;
+            cellSubmittedDate.textContent = report.submittedDate;
+        });
+    }
+</script>
